@@ -1,0 +1,40 @@
+.main {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form {
+    width: 50%;
+    height: 50%;
+    gap: 1rem;
+    display: grid;
+    grid-template-areas:    "firstname lastname"
+                            "title title"
+                            "description description"
+                            "type save";
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.form input, .form select {
+    padding: 0.5rem;
+    min-width: 0;
+    font-size: 1.5rem;
+}
+
+#fName {
+    grid-area: firstname;
+}
+
+#lName {
+    grid-area: lastname;
+}
+
+#topicTitle {
+    grid-area: title;
+}
+
+#topicDescription {
+    grid-area: description;
+}
