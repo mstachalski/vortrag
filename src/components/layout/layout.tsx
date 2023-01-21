@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <li>GF 3</li>
         </ul>
         <Link href={"/"}>GFT Arena</Link>
-        <span>Login</span>
+        <span>Logout</span>
       </div>
       {children}
     </>
