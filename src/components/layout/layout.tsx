@@ -1,6 +1,7 @@
 import Link from "next/link";
 import layoutStyles from "./layout.module.css";
 import { ReactNode } from "react";
+import {signOut} from "next-auth/react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,7 +13,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <li>GF 3</li>
         </ul>
         <Link href={"/"}>GFT Arena</Link>
-        <span>Logout</span>
+        <span onClick={() => signOut()}>Logout</span>
       </div>
       {children}
     </>
