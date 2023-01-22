@@ -6,6 +6,18 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 export default NextAuth({
   secret: "ABC",
   adapter: PrismaAdapter(prisma),
+  callbacks: {
+    async jwt({ user, token }) {
+      if(user?.id) {
+        token.uid = user.id
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.uid;
+      return session;
+    },
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
