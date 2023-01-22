@@ -17,24 +17,40 @@
     grid-template-columns: repeat(2, 1fr);
 }
 
-.form input, .form select {
+.form input, .form select, .form textarea {
     padding: 0.5rem;
     min-width: 0;
     font-size: 1.5rem;
 }
 
-#fName {
+.form textarea {
+    resize: none;
+}
+
+.form div:has(#fName) {
     grid-area: firstname;
 }
 
-#lName {
+.form div:has(#lName) {
     grid-area: lastname;
 }
 
-#topicTitle {
+.form div:has(#topicTitle) {
     grid-area: title;
 }
 
-#topicDescription {
+.form div:has(#topicDescription) {
     grid-area: description;
+    position: relative
+}
+
+.inputContainer {
+    display: grid;
+}
+
+.charactersLeft {
+    position:absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
 }
