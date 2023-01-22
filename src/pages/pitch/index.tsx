@@ -7,46 +7,41 @@ import {
   useForm,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { trpc } from "@/utils/trpc";
+import { topicSchema } from "@/schemas/topicSchema";
+import { getSession } from "next-auth/react";
 
-export default function Pitch() {
-  const topicSchema = z.object({
-    author: z.object({
-      firstName: z
-        .string({ invalid_type_error: "Input must be a string" })
-        .min(1, { message: "Must enter at least one character" })
-        .refine((value) => value.match(/^[a-zA-Z]+$/), {
-          message: "Numbers are not allowed",
-        }),
-      lastName: z.string().min(1),
-    }),
-    topic: z.object({
-      title: z.string().min(1),
-      description: z.string().max(150).optional(),
-      type: z.enum([
-        "Hands-On",
-        "Vortrag",
-        "Lightning Talk",
-        "Diskussionsrunde",
-      ]),
-    }),
-  });
-
-  type IFormData = z.infer<typeof topicSchema>;
-
+type IFormData = z.infer<typeof topicSchema>;
+export default function Index() {
+  const { mutate } = trpc.createTopic.useMutation({ onSuccess: () => reset() });
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    reset,
+    setValue,
+    getValues,
   } = useForm<IFormData>({
     resolver: zodResolver(topicSchema),
+    defaultValues: {
+      author: { id: "", firstName: "", lastName: "" },
+      topic: { type: "Hands-On", title: "", description: "" },
+    },
+  });
+
+  getSession().then((session) => {
+    if (session?.user.id) {
+      setValue("author.id", session?.user.id);
+    }
   });
 
   const submitForm: SubmitHandler<IFormData> = (data: IFormData) => {
-    console.log(JSON.stringify(data));
+    mutate(data);
   };
 
   const onError: SubmitErrorHandler<IFormData> = (errors: FieldErrors) => {
+    console.log(JSON.stringify(getValues()));
     console.log(errors);
   };
 
