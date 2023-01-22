@@ -3,8 +3,11 @@ import Link from "next/link";
 import styles from "../styles/page.module.css";
 import TopicCard from "@/components/topicCard/TopicCard";
 import Head from "next/head";
+import { trpc } from "@/utils/trpc";
 
 export default function Home() {
+  const topics = trpc.getTopics.useQuery();
+  console.log(JSON.stringify(topics.data));
   return (
     <>
       <Head>

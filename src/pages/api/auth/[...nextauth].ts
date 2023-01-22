@@ -30,9 +30,15 @@ export default NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log(credentials?.email)
+
         const user = await prisma.user.findUnique({
           where: { email: credentials?.email },
+        }).catch(err => {
+          console.log(err)
         });
+
+        console.log(JSON.stringify(user))
         if (user && user.password === credentials?.password) {
           // Any object returned will be saved in `user` property of the JWT
           return user;
