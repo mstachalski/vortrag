@@ -2,7 +2,6 @@
 .card {
     font-family: var(--font-mono);
     border-radius: var(--radius-3);
-    width: 30rem;
     height: 10rem;
     color: white;
     display: grid;
