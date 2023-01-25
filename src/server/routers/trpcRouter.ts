@@ -1,13 +1,14 @@
 import { procedure, router } from "../trpc";
-import { topicSchema } from "@/schemas/topicSchema";
+import { Topics, topicSchema } from "@/schemas/topicSchema";
 import { prisma } from "../../../lib/prisma";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-const Topic = z.array(topicSchema.shape.topic);
 export const appRouter = router({
-  getTopics: procedure.output(Topic).query(async () => {
-    return await prisma.topic.findMany();
+  getTopics: procedure.query(async () => {
+    return await prisma.topic.findMany({
+      select: { type: true, title: true, description: true },
+    });
   }),
   createTopic: procedure.input(topicSchema).mutation(async (req) => {
     const user = await prisma.user

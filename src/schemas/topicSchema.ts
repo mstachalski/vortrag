@@ -22,3 +22,5 @@ export const topicSchema = z.object({
     }),
   }),
 });
+
+export const Topics = z.array(topicSchema.shape.topic);
