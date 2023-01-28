@@ -4,81 +4,18 @@ import styles from "../styles/page.module.css";
 import TopicCard from "@/components/topicCard/TopicCard";
 import Head from "next/head";
 import { trpc } from "@/utils/trpc";
-import { useState } from "react";
-import { z } from "zod";
-import { Topics } from "@/schemas/topicSchema";
+import { useSession } from "next-auth/react";
+import { mockSession } from "next-auth/client/__tests__/helpers/mocks";
 
-type Topic = z.infer<typeof Topics.element>;
+function voteFor(id: number) {
 
-type VotedCombination = {
-  topic1: Topic;
-  topic2: Topic;
-};
-
-function pickTwo(
-  topics: Topic[],
-  votedCombinations: VotedCombination[]
-): { left: Topic; right: Topic } {
-  const index1 = Math.floor(Math.random() * topics.length);
-  let index2 = Math.floor(Math.random() * topics.length);
-
-  while (
-    index2 === index1 ||
-    votedCombinations.some((combination) => {
-      return (
-        (combination.topic1 === topics[index1] &&
-          combination.topic2 === topics[index2]) ||
-        (combination.topic1 === topics[index2] &&
-          combination.topic2 === topics[index1])
-      );
-    })
-  ) {
-    index2 = Math.floor(Math.random() * topics.length);
-  }
-
-  const topic1 = topics[index1];
-  const topic2 = topics[index2];
-  return { left: topic1, right: topic2 };
 }
-
-function HomeContent({ topics }: { topics: Topic[] }) {
-  const [votedCombinations, setVotedCombinations] = useState<
-    VotedCombination[]
-  >([]);
-
-  function handleVote(t1: Topic, t2: Topic) {
-    setVotedCombinations((prev) => [...prev, { topic1: t1, topic2: t2 }]);
-  }
-
-  if (topics && topics.length >= 2) {
-    let chosenTopics = pickTwo(topics, votedCombinations);
-    return (
-      <>
-        <TopicCard
-          side={"left"}
-          topic={chosenTopics.left}
-          onClick={() => handleVote(chosenTopics.left, chosenTopics.right)}
-        />
-        <span>vs.</span>
-        <TopicCard
-          side={"right"}
-          topic={chosenTopics.right}
-          onClick={() => handleVote(chosenTopics.left, chosenTopics.right)}
-        />
-      </>
-    );
-  }
-
-  return <span>Not enough topics pitched yet.</span>;
-}
-
 export default function Home() {
-  const { data, status } = trpc.getTopics.useQuery(undefined, {
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    staleTime: Infinity,
-  });
+  const { data: sessionData } = useSession();
+
+  const { data, status } = trpc.getTopics.useQuery(sessionData?.user.id);
+
+  let voteMutation = trpc.voteForTopic.useMutation()
 
   return (
     <>
@@ -94,14 +31,15 @@ export default function Home() {
             Pitch your own
           </Link>
           {status === "success" ? (
-            data.map((topic) => (
-              <TopicCard
-                key={topic.title}
-                side={"left"}
-                topic={topic}
-                onClick={() => {}}
-              />
-            ))
+            data.map((topic) => {
+              const hasUserVotedOn = topic.votedBy.some(
+                (vote) => vote.id === sessionData?.user.id
+              );
+              let onClickHandler = voteMutation.mutate.bind(null, {tid: topic.id, uid: sessionData?.user.id});
+              return (
+                <TopicCard key={topic.id} topic={topic} hasVoted={hasUserVotedOn} onClick={onClickHandler} />
+              );
+            })
           ) : (
             <span>Please wait while loading data...</span>
           )}

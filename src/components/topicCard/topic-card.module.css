@@ -9,6 +9,7 @@
     background: white;
     box-shadow: var(--shadow-1);
     transition: box-shadow 1s;
+    position: relative;
 }
 
 .card.right {
@@ -30,6 +31,19 @@
 .card .detail {
     color: black;
     padding: 1rem;
+}
+
+.card .voted {
+    width: 1rem;
+    height: 1rem;
+    position: absolute;
+    border-radius: var(--radius-round);
+    border: #adec6a 1px solid;
+    right: 0;
+    margin-top: 1rem;
+    margin-right: 1rem;
+    background-color: #adec6a;
+    animation: var(--animation-pulse)
 }
 
 .card:hover {

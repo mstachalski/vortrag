@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { number, z } from "zod";
 
 export const topicSchema = z.object({
   author: z.object({
@@ -16,11 +16,16 @@ export const topicSchema = z.object({
     description: z.string().max(150),
     type: z.string().refine((value) => {
       console.log(value);
-      return ["Hands-On", "Vortrag", "Lightning Talk", "Diskussionsrunde"].includes(
-        value
-      );
+      return [
+        "Hands-On",
+        "Vortrag",
+        "Lightning Talk",
+        "Diskussionsrunde",
+      ].includes(value);
     }),
   }),
 });
 
-export const Topics = z.array(topicSchema.shape.topic);
+export const Topics = z.array(
+  topicSchema.shape.topic.merge(z.object({ id: number() }))
+);
