@@ -10,12 +10,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function Pitch() {
   //Todo
-  const topicSchema = z.object();
+  const topicSchema = z.null();
 
   type IFormData = z.infer<typeof topicSchema>;
 
   //TODO Felder aus useForm holen und hier destructuren
-  const {  } = useForm<IFormData>({
+  const {  } = useForm({
     resolver: zodResolver(topicSchema),
   });
 
@@ -33,7 +33,6 @@ export default function Pitch() {
             type="text"
             id={styles.fName}
             placeholder={"First Name"}
-            {...register("author.firstName")}
           />
         </div>
         <div className={styles.inputContainer}>
@@ -44,7 +43,6 @@ export default function Pitch() {
             type="text"
             id={styles.lName}
             placeholder={"Last Name"}
-            {...register("author.lastName")}
           />
         </div>
         <div className={styles.inputContainer}>
@@ -55,7 +53,6 @@ export default function Pitch() {
             type="text"
             id={styles.topicTitle}
             placeholder={"Topic Title"}
-            {...register("topic.title")}
           />
         </div>
         <div className={styles.inputContainer}>
@@ -67,7 +64,6 @@ export default function Pitch() {
             maxLength={150}
             id={styles.topicDescription}
             placeholder={"Topic Description"}
-            {...register("topic.description")}
           />
           <span className={styles.charactersLeft}>
             {
@@ -78,7 +74,6 @@ export default function Pitch() {
         <select
           id={styles.type}
           placeholder={"Vortragsart"}
-          {...register("topic.type")}
         >
           <option value="Hands-On">Hands-On</option>
           <option value="Vortrag">Vortrag</option>
