@@ -5,11 +5,7 @@ import TopicCard from "@/components/topicCard/TopicCard";
 import Head from "next/head";
 import { trpc } from "@/utils/trpc";
 import { useSession } from "next-auth/react";
-import { mockSession } from "next-auth/client/__tests__/helpers/mocks";
 
-function voteFor(id: number) {
-
-}
 export default function Home() {
   const { data: sessionData } = useSession();
 
